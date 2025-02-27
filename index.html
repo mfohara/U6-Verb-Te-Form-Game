@@ -58,7 +58,7 @@
             { masu: "します", te: ["して", "shite"], group: 3, english: "to do" }
         ];
 
-        let shuffledVerbs, currentIndex, groupSelected;
+        let shuffledVerbs, currentIndex;
 
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
@@ -73,9 +73,21 @@
         function startGame() {
             shuffledVerbs = selectRandomVerbs();
             currentIndex = 0;
-            groupSelected = false;
             showNextVerb();
             document.getElementById("restart").style.display = "none";
+        }
+
+        function checkAnswer() {
+            let verb = shuffledVerbs[currentIndex];
+            let answer = document.getElementById("answer").value.trim();
+            if (verb.te.includes(answer)) {
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("answer").value = "";
+                currentIndex++;
+                showNextVerb();
+            } else {
+                document.getElementById("feedback").innerText = "Incorrect て form. Try again.";
+            }
         }
 
         function showNextVerb() {
@@ -87,22 +99,7 @@
             }
             let verb = shuffledVerbs[currentIndex];
             document.getElementById("verb").innerText = `${verb.masu} (${verb.english})`;
-            document.getElementById("buttons").innerHTML = `
-                <button onclick="selectGroup(1)">Group 1</button>
-                <button onclick="selectGroup(2)">Group 2</button>
-                <button onclick="selectGroup(3)">Group 3</button>
-            `;
-        }
-
-        function selectGroup(group) {
-            let verb = shuffledVerbs[currentIndex];
-            if (group === verb.group) {
-                document.getElementById("buttons").innerHTML = "";
-                document.getElementById("input-container").style.display = "block";
-                groupSelected = true;
-            } else {
-                document.getElementById("feedback").innerText = "Incorrect group. Try again.";
-            }
+            document.getElementById("input-container").style.display = "block";
         }
 
         startGame();
