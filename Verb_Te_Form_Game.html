@@ -1,0 +1,212 @@
+import React, { useState, useEffect } from "react";
+
+function Button({ onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+    >
+      {children}
+    </button>
+  );
+}
+
+function Input({ value, onChange, placeholder }) {
+  return (
+    <input
+      type="text"
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      className="w-full p-2 border border-gray-300 rounded-lg"
+    />
+  );
+}
+
+const group1Verbs = [
+  { masu: "かいます", te: "かって", group: 1, english: "to buy" },
+  { masu: "のみます", te: "のんで", group: 1, english: "to drink" },
+  { masu: "つくります", te: "つくって", group: 1, english: "to make" },
+  { masu: "やきます", te: "やいて", group: 1, english: "to grill/bake" },
+  { masu: "たちます", te: "たって", group: 1, english: "to stand" },
+  { masu: "すすぎます", te: "すすいで", group: 1, english: "to rinse" },
+  { masu: "きります", te: "きって", group: 1, english: "to cut" },
+  { masu: "休みます", te: "やすんで", group: 1, english: "to rest" },
+  { masu: "あらいます", te: "あらって", group: 1, english: "to wash" },
+  { masu: "だします", te: "だして", group: 1, english: "to take out" },
+  { masu: "まちます", te: "まって", group: 1, english: "to wait" },
+  { masu: "えらびます", te: "えらんで", group: 1, english: "to choose" },
+  { masu: "とります", te: "とって", group: 1, english: "to take" },
+  { masu: "行きます", te: "いって", group: 1, english: "to go" },
+];
+
+const group2Verbs = [
+  { masu: "食べます", te: "たべて", group: 2, english: "to eat" },
+  { masu: "見ます", te: "みて", group: 2, english: "to see/watch" },
+  { masu: "います", te: "いて", group: 2, english: "to be (animate)" },
+  { masu: "まぜます", te: "まぜて", group: 2, english: "to mix" },
+  { masu: "あけます", te: "あけて", group: 2, english: "to open" },
+  { masu: "しめます", te: "しめて", group: 2, english: "to close" },
+  { masu: "見せます", te: "みせて", group: 2, english: "to show" },
+  { masu: "わすれます", te: "わすれて", group: 2, english: "to forget" },
+];
+
+const group3Verbs = [
+  { masu: "きます", te: "きて", group: 3, english: "to come" },
+  { masu: "します", te: "して", group: 3, english: "to do" },
+];
+
+function shuffleArray(array) {
+  return array
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
+
+function selectRandomVerbs() {
+  const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 6);
+  const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 6);
+  return shuffleArray([...selectedGroup1, ...selectedGroup2, ...group3Verbs]);
+}
+
+export default function VerbTeFormGame() {
+  const [shuffledVerbs, setShuffledVerbs] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [groupSelected, setGroupSelected] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [timer, setTimer] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [timerRunning, setTimerRunning] = useState(false);
+
+  const resetGame = () => {
+    setShuffledVerbs(selectRandomVerbs());
+    setCurrentIndex(0);
+    setGroupSelected(false);
+    setInputValue("");
+    setFeedback("");
+    setTimer(0);
+    setCompleted(false);
+    setTimerRunning(false);
+  };
+
+  useEffect(() => {
+    resetGame();
+  }, []);
+
+  useEffect(() => {
+    let interval;
+    if (!completed && timerRunning) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timerRunning, completed]);
+
+  const currentVerb = shuffledVerbs[currentIndex];
+
+  const handleGroupSelection = (group) => {
+    if (group === currentVerb.group) {
+      setGroupSelected(true);
+      setFeedback("Correct! Now type the て form.");
+      if (!timerRunning) setTimerRunning(true);
+    } else {
+      setFeedback("Incorrect group. Try again.");
+    }
+  };
+
+  const handleTeFormSubmit = () => {
+    const input = inputValue.trim().toLowerCase();
+    if (
+      input === currentVerb.te ||
+      convertToHiragana(input) === currentVerb.te ||
+      convertToRomaji(currentVerb.te) === input
+    ) {
+      if (currentIndex + 1 === shuffledVerbs.length) {
+        setFeedback(`All done! You completed in ${timer} seconds.`);
+        setCompleted(true);
+        setTimerRunning(false);
+      } else {
+        setFeedback("Great job! Next verb:");
+        setGroupSelected(false);
+        setInputValue("");
+        setCurrentIndex((prev) => prev + 1);
+      }
+    } else {
+      setFeedback("Incorrect て form. Try again.");
+    }
+  };
+
+  const convertToRomaji = (kana) => {
+    const romajiMap = {
+      "たべて": "tabete",
+      "のんで": "nonde",
+      "つくって": "tsukutte",
+      "やいて": "yaite",
+      "たって": "tatte",
+      "すすいで": "susuide",
+      "きって": "kitte",
+      "やすんで": "yasunde",
+      "あらって": "aratte",
+      "だして": "dashite",
+      "まって": "matte",
+      "えらんで": "erande",
+      "とって": "totte",
+      "いって": "itte",
+      "みて": "mite",
+      "いて": "ite",
+      "まぜて": "mazete",
+      "あけて": "akete",
+      "しめて": "shimete",
+      "みせて": "misete",
+      "わすれて": "wasurete",
+      "きて": "kite",
+      "して": "shite",
+    };
+    return romajiMap[kana] || "";
+  };
+
+  const convertToHiragana = (input) => {
+    return input.replace(/[ぁ-んァ-ン]/g, (char) => char);
+  };
+
+  if (completed) {
+    return (
+      <div className="p-6 space-y-4 bg-white rounded-2xl shadow-lg max-w-lg mx-auto text-center">
+        <h1 className="text-2xl font-bold">Congratulations!</h1>
+        <p className="text-xl">You finished in {timer} seconds.</p>
+        <Button onClick={resetGame}>Try Again</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-4 bg-white rounded-2xl shadow-lg max-w-lg mx-auto text-center">
+      <h1 className="text-2xl font-bold">Japanese Verb て Form Practice</h1>
+      <p className="text-xl">Time: {timer} seconds</p>
+      {currentVerb && (
+        <p className="text-xl">
+          {currentVerb.masu} ({currentVerb.english})
+        </p>
+      )}
+      {!groupSelected ? (
+        <div className="space-x-4">
+          <Button onClick={() => handleGroupSelection(1)}>Group 1</Button>
+          <Button onClick={() => handleGroupSelection(2)}>Group 2</Button>
+          <Button onClick={() => handleGroupSelection(3)}>Group 3</Button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Input
+            placeholder="Type the て form in hiragana or romaji"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <Button onClick={handleTeFormSubmit}>Submit</Button>
+        </div>
+      )}
+      {feedback && <p className="text-lg text-green-600">{feedback}</p>}
+    </div>
+  );
+}
