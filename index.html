@@ -17,7 +17,7 @@
         <p id="verb"></p>
         <div id="buttons"></div>
         <div id="input-container" style="display: none;">
-            <input type="text" id="answer" placeholder="Type the て form" onkeypress="handleKeyPress(event)">
+            <input type="text" id="answer" placeholder="Type the て form">
             <button onclick="checkAnswer()">Submit</button>
         </div>
         <p id="feedback"></p>
@@ -60,12 +60,6 @@
                 showNextVerb();
             } else {
                 document.getElementById("feedback").innerText = "Incorrect て form. Try again.";
-            }
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                checkAnswer();
             }
         }
 
