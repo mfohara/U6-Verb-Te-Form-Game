@@ -28,12 +28,29 @@
         const group1Verbs = [
             { masu: "かいます", te: ["かって", "katte"], group: 1, english: "to buy" },
             { masu: "のみます", te: ["のんで", "nonde"], group: 1, english: "to drink" },
-            { masu: "つくります", te: ["つくって", "tsukutte"], group: 1, english: "to make" }
+            { masu: "つくります", te: ["つくって", "tsukutte"], group: 1, english: "to make" },
+            { masu: "やきます", te: ["やいて", "yaite"], group: 1, english: "to grill/bake" },
+            { masu: "たちます", te: ["たって", "tatte"], group: 1, english: "to stand" },
+            { masu: "すすぎます", te: ["すすいで", "susuide"], group: 1, english: "to rinse" },
+            { masu: "きります", te: ["きって", "kitte"], group: 1, english: "to cut" },
+            { masu: "休みます", te: ["やすんで", "休んで", "yasunde"], group: 1, english: "to rest" },
+            { masu: "あらいます", te: ["あらって", "aratte"], group: 1, english: "to wash" },
+            { masu: "だします", te: ["だして", "dashite"], group: 1, english: "to take out" },
+            { masu: "まちます", te: ["まって", "matte"], group: 1, english: "to wait" },
+            { masu: "えらびます", te: ["えらんで", "erande"], group: 1, english: "to choose" },
+            { masu: "とります", te: ["とって", "totte"], group: 1, english: "to take" },
+            { masu: "行きます", te: ["いって", "行って", "itte"], group: 1, english: "to go" }
         ];
 
         const group2Verbs = [
-            { masu: "食べます", te: ["たべて", "tabete"], group: 2, english: "to eat" },
-            { masu: "見ます", te: ["みて", "mite"], group: 2, english: "to see/watch" }
+            { masu: "食べます", te: ["たべて", "食べて", "tabete"], group: 2, english: "to eat" },
+            { masu: "見ます", te: ["みて", "見て", "mite"], group: 2, english: "to see/watch" },
+            { masu: "います", te: ["いて", "ite"], group: 2, english: "to exist (animate)" },
+            { masu: "まぜます", te: ["まぜて", "mazete"], group: 2, english: "to mix" },
+            { masu: "あけます", te: ["あけて", "akete"], group: 2, english: "to open" },
+            { masu: "しめます", te: ["しめて", "shimete"], group: 2, english: "to close" },
+            { masu: "見せます", te: ["みせて", "見せて", "misete"], group: 2, english: "to show" },
+            { masu: "わすれます", te: ["わすれて", "wasurete"], group: 2, english: "to forget" }
         ];
         
         const group3Verbs = [
@@ -41,70 +58,14 @@
             { masu: "します", te: ["して", "shite"], group: 3, english: "to do" }
         ];
 
-        let shuffledVerbs, currentIndex, startTime;
-
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
         }
 
         function selectRandomVerbs() {
-            const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 3);
-            const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 3);
+            const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 6);
+            const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 6);
             return shuffleArray([...selectedGroup1, ...selectedGroup2, ...group3Verbs]);
-        }
-
-        function startGame() {
-            shuffledVerbs = selectRandomVerbs();
-            currentIndex = 0;
-            startTime = Date.now();
-            document.getElementById("restart").style.display = "none";
-            document.getElementById("feedback").innerText = "";
-            showNextVerb();
-        }
-
-        function showNextVerb() {
-            if (currentIndex >= shuffledVerbs.length) {
-                let timeTaken = Math.floor((Date.now() - startTime) / 1000);
-                document.getElementById("verb").innerText = "Game Over!";
-                document.getElementById("feedback").innerText = `You finished in ${timeTaken} seconds.`;
-                document.getElementById("restart").style.display = "block";
-                document.getElementById("buttons").innerHTML = "";
-                document.getElementById("input-container").style.display = "none";
-                return;
-            }
-
-            let verb = shuffledVerbs[currentIndex];
-            document.getElementById("verb").innerText = `${verb.masu} (${verb.english})`;
-            document.getElementById("buttons").innerHTML = `
-                <button onclick="selectGroup(1)">Group 1</button>
-                <button onclick="selectGroup(2)">Group 2</button>
-                <button onclick="selectGroup(3)">Group 3</button>
-            `;
-        }
-
-        function selectGroup(group) {
-            let verb = shuffledVerbs[currentIndex];
-            if (group === verb.group) {
-                document.getElementById("feedback").innerText = "Correct! Now type the て form.";
-                document.getElementById("buttons").innerHTML = "";
-                document.getElementById("input-container").style.display = "block";
-            } else {
-                document.getElementById("feedback").innerText = "Incorrect group. Try again.";
-            }
-        }
-
-        function checkAnswer() {
-            let verb = shuffledVerbs[currentIndex];
-            let answer = document.getElementById("answer").value.trim();
-            if (verb.te.includes(answer)) {
-                document.getElementById("feedback").innerText = "Great job! Next verb.";
-                document.getElementById("input-container").style.display = "none";
-                document.getElementById("answer").value = "";
-                currentIndex++;
-                showNextVerb();
-            } else {
-                document.getElementById("feedback").innerText = "Incorrect て form. Try again.";
-            }
         }
 
         startGame();
