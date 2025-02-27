@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         .game-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9; }
-        button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
         input { padding: 10px; font-size: 16px; width: 80%; margin: 10px; }
     </style>
 </head>
@@ -21,6 +21,7 @@
             <button onclick="checkAnswer()">Submit</button>
         </div>
         <p id="feedback"></p>
+        <p id="completion-time" style="font-weight: bold;"></p>
         <button id="restart" onclick="startGame()" style="display: none;">Try Again</button>
     </div>
     
@@ -58,7 +59,7 @@
             { masu: "します", te: ["して", "shite"], group: 3, english: "to do" }
         ];
 
-        let shuffledVerbs, currentIndex;
+        let shuffledVerbs, currentIndex, startTime;
 
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
@@ -73,15 +74,16 @@
         function startGame() {
             shuffledVerbs = selectRandomVerbs();
             currentIndex = 0;
+            startTime = Date.now();
             showNextVerb();
             document.getElementById("restart").style.display = "none";
+            document.getElementById("completion-time").innerText = "";
         }
 
         function checkAnswer() {
             let verb = shuffledVerbs[currentIndex];
             let answer = document.getElementById("answer").value.trim();
             if (verb.te.includes(answer)) {
-                document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("answer").value = "";
                 currentIndex++;
                 showNextVerb();
@@ -92,8 +94,9 @@
 
         function showNextVerb() {
             if (currentIndex >= shuffledVerbs.length) {
+                let timeTaken = Math.floor((Date.now() - startTime) / 1000);
                 document.getElementById("verb").innerText = "Game Over!";
-                document.getElementById("feedback").innerText = "Well done!";
+                document.getElementById("completion-time").innerText = `You finished in ${timeTaken} seconds.`;
                 document.getElementById("restart").style.display = "block";
                 return;
             }
