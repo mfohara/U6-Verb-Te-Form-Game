@@ -49,7 +49,7 @@
             { masu: "まぜます", te: ["まぜて", "mazete"], group: 2, english: "to mix" },
             { masu: "あけます", te: ["あけて", "akete"], group: 2, english: "to open" },
             { masu: "しめます", te: ["しめて", "shimete"], group: 2, english: "to close" },
-            { masu: "見せます", te: ["みせて", "見せて", "misete"], group: 2, english: "to show" },
+            { masu: "見せます", te: ["みせて", "見せて', "misete"], group: 2, english: "to show" },
             { masu: "わすれます", te: ["わすれて", "wasurete"], group: 2, english: "to forget" }
         ];
         
@@ -57,6 +57,8 @@
             { masu: "きます", te: ["きて", "kite"], group: 3, english: "to come" },
             { masu: "します", te: ["して", "shite"], group: 3, english: "to do" }
         ];
+
+        let shuffledVerbs, currentIndex;
 
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
@@ -66,6 +68,37 @@
             const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 6);
             const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 6);
             return shuffleArray([...selectedGroup1, ...selectedGroup2, ...group3Verbs]);
+        }
+
+        function startGame() {
+            shuffledVerbs = selectRandomVerbs();
+            currentIndex = 0;
+            showNextVerb();
+            document.getElementById("restart").style.display = "none";
+        }
+
+        function showNextVerb() {
+            if (currentIndex >= shuffledVerbs.length) {
+                document.getElementById("verb").innerText = "Game Over!";
+                document.getElementById("feedback").innerText = "Well done!";
+                document.getElementById("restart").style.display = "block";
+                return;
+            }
+            let verb = shuffledVerbs[currentIndex];
+            document.getElementById("verb").innerText = `${verb.masu} (${verb.english})`;
+        }
+
+        function checkAnswer() {
+            let verb = shuffledVerbs[currentIndex];
+            let answer = document.getElementById("answer").value.trim();
+            if (verb.te.includes(answer)) {
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("answer").value = "";
+                currentIndex++;
+                showNextVerb();
+            } else {
+                document.getElementById("feedback").innerText = "Incorrect て form. Try again.";
+            }
         }
 
         startGame();
