@@ -3,113 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verb Te-form Game</title>
-    <script defer="defer" src="./static/js/main.js"></script>
-    <link rel="stylesheet" href="./static/css/main.css">
+    <title>Japanese Verb て Form Practice</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .game-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+        input { padding: 10px; font-size: 16px; width: 80%; margin: 10px; }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="game-container">
+        <h1>Japanese Verb て Form Practice</h1>
+        <p id="timer">Time: 0 seconds</p>
+        <p id="verb"></p>
+        <div id="buttons"></div>
+        <div id="input-container" style="display: none;">
+            <input type="text" id="answer" placeholder="Type the て form">
+            <button onclick="checkAnswer()">Submit</button>
+        </div>
+        <p id="feedback"></p>
+        <button id="restart" onclick="startGame()" style="display: none;">Try Again</button>
+    </div>
+    
+    <script>
+        const group1Verbs = [
+            { masu: "かいます", te: "かって", group: 1, english: "to buy" },
+            { masu: "のみます", te: "のんで", group: 1, english: "to drink" },
+            { masu: "つくります", te: "つくって", group: 1, english: "to make" }
+        ];
+
+        const group2Verbs = [
+            { masu: "食べます", te: "たべて", group: 2, english: "to eat" },
+            { masu: "見ます", te: "みて", group: 2, english: "to see/watch" }
+        ];
+        
+        const group3Verbs = [
+            { masu: "きます", te: "きて", group: 3, english: "to come" },
+            { masu: "します", te: "して", group: 3, english: "to do" }
+        ];
+
+        let shuffledVerbs, currentIndex, startTime;
+
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function selectRandomVerbs() {
+            const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 3);
+            const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 3);
+            return shuffleArray([...selectedGroup1, ...selectedGroup2, ...group3Verbs]);
+        }
+
+        function startGame() {
+            shuffledVerbs = selectRandomVerbs();
+            currentIndex = 0;
+            startTime = Date.now();
+            document.getElementById("restart").style.display = "none";
+            document.getElementById("feedback").innerText = "";
+            showNextVerb();
+        }
+
+        function showNextVerb() {
+            if (currentIndex >= shuffledVerbs.length) {
+                let timeTaken = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById("verb").innerText = "Game Over!";
+                document.getElementById("timer").innerText = `You finished in ${timeTaken} seconds.`;
+                document.getElementById("restart").style.display = "block";
+                document.getElementById("buttons").innerHTML = "";
+                document.getElementById("input-container").style.display = "none";
+                return;
+            }
+
+            let verb = shuffledVerbs[currentIndex];
+            document.getElementById("verb").innerText = `${verb.masu} (${verb.english})`;
+            document.getElementById("buttons").innerHTML = `
+                <button onclick="selectGroup(1)">Group 1</button>
+                <button onclick="selectGroup(2)">Group 2</button>
+                <button onclick="selectGroup(3)">Group 3</button>
+            `;
+        }
+
+        function selectGroup(group) {
+            let verb = shuffledVerbs[currentIndex];
+            if (group === verb.group) {
+                document.getElementById("feedback").innerText = "Correct! Now type the て form.";
+                document.getElementById("buttons").innerHTML = "";
+                document.getElementById("input-container").style.display = "block";
+            } else {
+                document.getElementById("feedback").innerText = "Incorrect group. Try again.";
+            }
+        }
+
+        function checkAnswer() {
+            let verb = shuffledVerbs[currentIndex];
+            let answer = document.getElementById("answer").value.trim();
+            if (answer === verb.te) {
+                document.getElementById("feedback").innerText = "Great job! Next verb.";
+                document.getElementById("input-container").style.display = "none";
+                document.getElementById("answer").value = "";
+                currentIndex++;
+                showNextVerb();
+            } else {
+                document.getElementById("feedback").innerText = "Incorrect て form. Try again.";
+            }
+        }
+
+        startGame();
+    </script>
 </body>
 </html>
-import React, { useState, useEffect } from "react";
-
-function Button({ onClick, children }) {
-  return (
-    <button
-      onClick={onClick}
-      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-    >
-      {children}
-    </button>
-  );
-}
-
-function Input({ value, onChange, placeholder }) {
-  return (
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="w-full p-2 border border-gray-300 rounded-lg"
-    />
-  );
-}
-
-const group1Verbs = [
-  { masu: "かいます", te: "かって", group: 1, english: "to buy" },
-  { masu: "のみます", te: "のんで", group: 1, english: "to drink" },
-  { masu: "つくります", te: "つくって", group: 1, english: "to make" },
-  { masu: "やきます", te: "やいて", group: 1, english: "to grill/bake" },
-  { masu: "たちます", te: "たって", group: 1, english: "to stand" },
-  { masu: "すすぎます", te: "すすいで", group: 1, english: "to rinse" },
-  { masu: "きります", te: "きって", group: 1, english: "to cut" },
-  { masu: "休みます", te: "やすんで", group: 1, english: "to rest" },
-  { masu: "あらいます", te: "あらって", group: 1, english: "to wash" },
-  { masu: "だします", te: "だして", group: 1, english: "to take out" },
-  { masu: "まちます", te: "まって", group: 1, english: "to wait" },
-  { masu: "えらびます", te: "えらんで", group: 1, english: "to choose" },
-  { masu: "とります", te: "とって", group: 1, english: "to take" },
-  { masu: "行きます", te: "いって", group: 1, english: "to go" },
-];
-
-const group2Verbs = [
-  { masu: "食べます", te: "たべて", group: 2, english: "to eat" },
-  { masu: "見ます", te: "みて", group: 2, english: "to see/watch" },
-  { masu: "います", te: "いて", group: 2, english: "to be (animate)" },
-  { masu: "まぜます", te: "まぜて", group: 2, english: "to mix" },
-  { masu: "あけます", te: "あけて", group: 2, english: "to open" },
-  { masu: "しめます", te: "しめて", group: 2, english: "to close" },
-  { masu: "見せます", te: "みせて", group: 2, english: "to show" },
-  { masu: "わすれます", te: "わすれて", group: 2, english: "to forget" },
-];
-
-const group3Verbs = [
-  { masu: "きます", te: "きて", group: 3, english: "to come" },
-  { masu: "します", te: "して", group: 3, english: "to do" },
-];
-
-function shuffleArray(array) {
-  return array
-    .map((value) => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);
-}
-
-function selectRandomVerbs() {
-  const selectedGroup1 = shuffleArray(group1Verbs).slice(0, 6);
-  const selectedGroup2 = shuffleArray(group2Verbs).slice(0, 6);
-  return shuffleArray([...selectedGroup1, ...selectedGroup2, ...group3Verbs]);
-}
-
-export default function VerbTeFormGame() {
-  const [shuffledVerbs, setShuffledVerbs] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [groupSelected, setGroupSelected] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [feedback, setFeedback] = useState("");
-  const [timer, setTimer] = useState(0);
-  const [completed, setCompleted] = useState(false);
-  const [timerRunning, setTimerRunning] = useState(false);
-
-  useEffect(() => {
-    setShuffledVerbs(selectRandomVerbs());
-  }, []);
-
-  return (
-    <div className="p-6 space-y-4 bg-white rounded-2xl shadow-lg max-w-lg mx-auto text-center">
-      <h1 className="text-2xl font-bold">Japanese Verb て Form Practice</h1>
-      <p className="text-xl">Time: {timer} seconds</p>
-      {completed ? (
-        <div>
-          <p className="text-xl">You finished in {timer} seconds.</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
-        </div>
-      ) : (
-        <p className="text-xl">
-          {shuffledVerbs[currentIndex]?.masu} ({shuffledVerbs[currentIndex]?.english})
-        </p>
-      )}
-    </div>
-  );
-}
