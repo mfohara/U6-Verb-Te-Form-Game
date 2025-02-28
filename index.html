@@ -25,10 +25,39 @@
     </div>
     
     <script>
-        const group1Verbs = [...];
-        const group2Verbs = [...];
-        const group3Verbs = [...];
+        const group1Verbs = [
+            { masu: "かいます", te: ["かって", "katte"], english: "to buy" },
+            { masu: "のみます", te: ["のんで", "nonde"], english: "to drink" },
+            { masu: "つくります", te: ["つくって", "tsukutte"], english: "to make" },
+            { masu: "やきます", te: ["やいて", "yaite"], english: "to grill/bake" },
+            { masu: "たちます", te: ["たって", "tatte"], english: "to stand" },
+            { masu: "すすぎます", te: ["すすいで", "susuide"], english: "to rinse" },
+            { masu: "きります", te: ["きって", "kitte"], english: "to cut" },
+            { masu: "休みます", te: ["やすんで", "yasunde"], english: "to rest" },
+            { masu: "あらいます", te: ["あらって", "aratte"], english: "to wash" },
+            { masu: "だします", te: ["だして", "dashite"], english: "to take out" },
+            { masu: "まちます", te: ["まって", "matte"], english: "to wait" },
+            { masu: "えらびます", te: ["えらんで", "erande"], english: "to choose" },
+            { masu: "とります", te: ["とって", "totte"], english: "to take" },
+            { masu: "行きます", te: ["いって", "itte"], english: "to go" }
+        ];
+
+        const group2Verbs = [
+            { masu: "食べます", te: ["たべて", "tabete"], english: "to eat" },
+            { masu: "見ます", te: ["みて", "mite"], english: "to see/watch" },
+            { masu: "います", te: ["いて", "ite"], english: "to exist (animate)" },
+            { masu: "まぜます", te: ["まぜて", "mazete"], english: "to mix" },
+            { masu: "あけます", te: ["あけて", "akete"], english: "to open" },
+            { masu: "しめます", te: ["しめて", "shimete"], english: "to close" },
+            { masu: "見せます", te: ["みせて", "misete"], english: "to show" },
+            { masu: "わすれます", te: ["わすれて", "wasurete"], english: "to forget" }
+        ];
         
+        const group3Verbs = [
+            { masu: "きます", te: ["きて", "kite"], english: "to come" },
+            { masu: "します", te: ["して", "shite"], english: "to do" }
+        ];
+
         let shuffledVerbs, currentIndex, startTime;
 
         function shuffleArray(array) {
