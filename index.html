@@ -15,9 +15,8 @@
     <div class="game-container">
         <h1>Japanese Verb て Form Practice</h1>
         <p id="verb"></p>
-        <div id="buttons"></div>
-        <div id="input-container" style="display: none;">
-            <input type="text" id="answer" placeholder="Type the て form">
+        <div id="input-container">
+            <input type="text" id="answer" placeholder="Type the て form" onkeypress="handleKeyPress(event)">
             <button onclick="checkAnswer()">Submit</button>
         </div>
         <p id="feedback"></p>
@@ -63,6 +62,12 @@
             }
         }
 
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        }
+
         function showNextVerb() {
             if (currentIndex >= shuffledVerbs.length) {
                 let timeTaken = Math.floor((Date.now() - startTime) / 1000);
@@ -73,7 +78,6 @@
             }
             let verb = shuffledVerbs[currentIndex];
             document.getElementById("verb").innerText = `${verb.masu} (${verb.english})`;
-            document.getElementById("input-container").style.display = "block";
         }
 
         startGame();
